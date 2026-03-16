@@ -1,0 +1,18 @@
+# Python cache and bytecode
+__pycache__/
+*.py[cod]
+
+# Virtual environments
+.venv/
+venv/
+
+# Local environment files
+.env
+
+# Generated runtime artifacts
+uploads/church_content.pdf
+uploads/church_content.txt
+uploads/church_content_manual.pdf
+uploads/church_content_manual.txt
+uploads/input.pdf
+uploads/final_presentation.pptx
