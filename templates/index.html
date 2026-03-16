@@ -1,399 +1,668 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <title>Church PPT Builder</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UBM Church Bulletin Generator</title>
+    <style>
+        :root {
+            --base-blue: #23297a;
+            --base-blue-deep: #171d5b;
+            --base-blue-soft: #eef1ff;
+            --ink: #1d2238;
+            --muted: #5d647e;
+            --line: #d8dced;
+            --surface: #ffffff;
+            --surface-alt: #f7f8fc;
+            --accent: #b89b5e;
+            --danger: #a33a3a;
+            --shadow: 0 18px 40px rgba(19, 28, 74, 0.12);
+            --radius: 18px;
+        }
 
-  <!-- Google Font -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+        * {
+            box-sizing: border-box;
+        }
 
-  <style>
-    :root {
-      --primary: #2563eb;
-      --primary-dark: #1e40af;
-      --success: #16a34a;
-      --danger: #dc2626;
-      --bg: #f8fafc;
-      --card: #ffffff;
-      --text: #1f2937;
-      --muted: #6b7280;
-      --border: #e5e7eb;
-    }
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            background:
+                radial-gradient(circle at top left, rgba(35, 41, 122, 0.1), transparent 32%),
+                linear-gradient(180deg, #f4f6fb 0%, #eef1f7 100%);
+            color: var(--ink);
+        }
 
-    * {
-      box-sizing: border-box;
-    }
+        .page-shell {
+            max-width: 1080px;
+            margin: 0 auto;
+            padding: 28px 20px 36px;
+        }
 
-    body {
-      font-family: 'Inter', sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      margin: 0;
-      padding: 40px 16px;
-    }
+        .hero {
+            background: linear-gradient(135deg, var(--base-blue) 0%, var(--base-blue-deep) 100%);
+            color: #ffffff;
+            border-radius: 26px;
+            padding: 34px 38px;
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+        }
 
-    .container {
-      max-width: 900px;
-      margin: auto;
-    }
+        .hero-kicker {
+            margin: 0 0 10px;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            opacity: 0.78;
+        }
 
-    header {
-      background: var(--primary);
-      color: white;
-      padding: 32px;
-      border-radius: 18px;
-      margin-bottom: 30px;
-      
-    }
+        h1 {
+            margin: 0;
+            font-family: Georgia, "Times New Roman", serif;
+            font-size: clamp(2rem, 4vw, 3.25rem);
+            font-weight: 600;
+            line-height: 1.1;
+        }
 
-    header h1 {
-      margin: 0 0 8px;
-      font-size: 30px;
-    }
+        .hero-copy {
+            max-width: 680px;
+            margin: 14px 0 0;
+            color: rgba(255, 255, 255, 0.86);
+            font-size: 1rem;
+            line-height: 1.65;
+        }
 
-    header p {
-      margin: 0;
-      opacity: 0.95;
-      font-size: 15px;
-    }
+        .workspace {
+            background: rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(216, 220, 237, 0.8);
+            border-radius: 24px;
+            padding: 22px;
+            backdrop-filter: blur(6px);
+        }
 
-    form {
-      display: flex;
-      flex-direction: column;
-      gap: 26px;
-    }
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 22px;
+            padding: 10px;
+            background: var(--base-blue);
+            border-radius: 18px;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+        }
 
-    .card {
-      background: var(--card);
-      border-radius: 16px;
-      padding: 26px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.06);
-      border: 1px solid var(--border);
-    }
+        .tab-btn {
+            flex: 1;
+            padding: 14px 18px;
+            cursor: pointer;
+            background: transparent;
+            border: 1px solid transparent;
+            outline: none;
+            font-size: 0.98rem;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.78);
+            transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+            border-radius: 12px;
+        }
 
-    .card h3 {
-      margin-top: 0;
-      margin-bottom: 18px;
-      font-size: 19px;
-      font-weight: 600;
-    }
+        .tab-btn:hover {
+            background-color: rgba(255, 255, 255, 0.08);
+            color: #ffffff;
+        }
 
-    label {
-      font-size: 14px;
-      font-weight: 500;
-      margin-bottom: 6px;
-      display: block;
-    }
+        .tab-btn.active {
+            background-color: #ffffff;
+            color: var(--base-blue);
+            border-color: rgba(255, 255, 255, 0.55);
+        }
 
-    input[type="file"],
-    input[type="text"],
-    select {
-      width: 100%;
-      padding: 11px 12px;
-      border-radius: 10px;
-      border: 1px solid var(--border);
-      font-size: 14px;
-      background: white;
-    }
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.25s ease;
+        }
 
-    input:focus,
-    select:focus {
-      outline: none;
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
-    }
+        .tab-content.active {
+            display: block;
+        }
 
-    .help-text {
-      font-size: 12px;
-      color: var(--muted);
-      margin-top: 4px;
-    }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(6px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
 
-    /* Hymn sections */
-    .hymn-section {
-      background: #f9fafb;
-      border: 1px dashed var(--border);
-      border-radius: 14px;
-      padding: 18px;
-      margin-bottom: 18px;
-    }
+        .form-group {
+            margin-bottom: 18px;
+            background: var(--surface);
+            padding: 22px;
+            border-radius: var(--radius);
+            border: 1px solid var(--line);
+            box-shadow: 0 8px 24px rgba(31, 39, 89, 0.05);
+        }
 
-    .hymn-section h4 {
-      margin: 0 0 14px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 15px;
-      font-weight: 600;
-    }
+        .section-title {
+            margin: 0 0 18px;
+            padding-bottom: 12px;
+            font-family: Georgia, "Times New Roman", serif;
+            font-size: 1.35rem;
+            font-weight: 600;
+            color: var(--base-blue);
+            border-bottom: 1px solid var(--line);
+        }
 
-    .hymn-input {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 14px;
-    }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--ink);
+            font-size: 0.92rem;
+        }
 
-    .hymn-input label {
-      font-weight: 400;
-      font-size: 12px;
-    }
+        small,
+        .helper-text {
+            color: var(--muted);
+            font-size: 0.88rem;
+            line-height: 1.45;
+        }
 
-    /* Buttons */
-    button {
-      border: none;
-      border-radius: 12px;
-      padding: 12px 22px;
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-    }
+        input[type="file"],
+        input[type="text"],
+        select {
+            width: 100%;
+            margin-bottom: 8px;
+            padding: 12px 14px;
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            background: var(--surface-alt);
+            color: var(--ink);
+            font-size: 0.96rem;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+        }
 
-    .btn-primary {
-      background: var(--primary);
-      color: white;
-    }
+        input[type="file"] {
+            padding: 10px 12px;
+            background: #ffffff;
+        }
 
-    .btn-primary:hover {
-      background: var(--primary-dark);
-    }
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: rgba(35, 41, 122, 0.45);
+            box-shadow: 0 0 0 4px rgba(35, 41, 122, 0.12);
+            background: #ffffff;
+        }
 
-    .btn-add {
-      background: var(--success);
-      color: white;
-      align-self: flex-start;
-    }
+        .row {
+            display: flex;
+            gap: 14px;
+            margin-bottom: 12px;
+            align-items: flex-start;
+        }
 
-    .btn-add:hover {
-      background: #15803d;
-    }
+        .col {
+            flex: 1;
+            min-width: 0;
+        }
 
-    .remove-hymn-btn {
-      background: var(--danger);
-      color: white;
-      padding: 6px 12px;
-      font-size: 12px;
-      border-radius: 8px;
-    }
+        .actions {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 12px;
+            flex-wrap: wrap;
+        }
 
-    footer {
-      margin-top: 40px;
-      font-size: 13px;
-      color: var(--muted);
-    }
+        button {
+            font-family: inherit;
+        }
 
-    code {
-      background: #eef2ff;
-      padding: 2px 6px;
-      border-radius: 6px;
-      font-size: 12px;
-    }
+        button.action-btn {
+            background: var(--base-blue);
+            color: #ffffff;
+            padding: 12px 24px;
+            border: none;
+            cursor: pointer;
+            font-size: 0.96rem;
+            font-weight: 600;
+            border-radius: 999px;
+            transition: transform 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 10px 20px rgba(35, 41, 122, 0.18);
+        }
 
-    @media (max-width: 720px) {
-      .hymn-input {
-        grid-template-columns: 1fr;
-      }
-    }
-  </style>
+        button.action-btn:hover {
+            background-color: var(--base-blue-deep);
+            transform: translateY(-1px);
+        }
+
+        .preview-btn {
+            background-color: #2f4a9e !important;
+        }
+
+        .preview-btn:hover {
+            background-color: #243b82 !important;
+        }
+
+        .add-btn {
+            background: transparent;
+            color: var(--base-blue);
+            border: 1px solid rgba(35, 41, 122, 0.2);
+            padding: 10px 16px;
+            border-radius: 999px;
+            cursor: pointer;
+            font-size: 0.92rem;
+            font-weight: 600;
+            transition: background-color 0.2s ease, border-color 0.2s ease;
+        }
+
+        .add-btn:hover {
+            background-color: rgba(35, 41, 122, 0.06);
+            border-color: rgba(35, 41, 122, 0.35);
+        }
+
+        .remove-btn {
+            background-color: transparent;
+            color: var(--danger);
+            border: 1px solid rgba(163, 58, 58, 0.25);
+            padding: 10px 12px;
+            border-radius: 12px;
+            cursor: pointer;
+            margin-top: 36px;
+            min-width: 44px;
+            transition: background-color 0.2s ease, border-color 0.2s ease;
+        }
+
+        .remove-btn:hover {
+            background-color: rgba(163, 58, 58, 0.08);
+            border-color: rgba(163, 58, 58, 0.4);
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 24px;
+            flex-wrap: wrap;
+            margin-top: 6px;
+        }
+
+        .radio-group label {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-right: 0;
+            margin-bottom: 0;
+            font-weight: 500;
+            color: var(--muted);
+        }
+
+        .alert {
+            background: #fff7f7;
+            color: #7f1d1d;
+            padding: 16px 18px;
+            margin-bottom: 18px;
+            border-radius: 16px;
+            border: 1px solid rgba(163, 58, 58, 0.2);
+        }
+
+        .footer-note {
+            margin-top: 18px;
+            background: var(--base-blue);
+            color: rgba(255, 255, 255, 0.82);
+            border-radius: 18px;
+            padding: 16px 20px;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        @media (max-width: 900px) {
+            .row {
+                flex-wrap: wrap;
+            }
+
+            .remove-btn {
+                margin-top: 0;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .page-shell {
+                padding: 16px 14px 26px;
+            }
+
+            .hero,
+            .workspace {
+                padding-left: 18px;
+                padding-right: 18px;
+            }
+
+            .tabs {
+                flex-direction: column;
+            }
+
+            .tab-btn {
+                width: 100%;
+            }
+
+            .actions {
+                align-items: stretch;
+            }
+
+            button.action-btn {
+                width: 100%;
+            }
+        }
+    </style>
 </head>
-
 <body>
-<div class="container">
+    <div class="page-shell">
+        <header class="hero">
+            <p class="hero-kicker">UBM Kurla</p>
+            <h1>UBM Church Bulletin Generator</h1>
+            <!-- <p class="hero-copy">Prepare weekly hymn selections, Bible readings, announcements, and output files from one structured workspace designed for fast review and consistent formatting.</p> -->
+        </header>
 
-  <header>
-    <h1>Church PPT Builder</h1>
-    <p>Upload your service sheet and PPT template to generate a complete Sunday presentation.</p>
-  </header>
+        <main class="workspace">
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <div class="alert">
+                        {% for message in messages %}
+                            <p>{{ message }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
 
-  <form method="post" enctype="multipart/form-data">
+            <div class="tabs">
+                <button class="tab-btn active" onclick="openTab(event, 'tab-upload')">Upload PDF</button>
+                <button class="tab-btn" onclick="openTab(event, 'tab-manual')">Manual Entry</button>
+            </div>
+            
+            <!-- TAB 1: PDF UPLOAD -->
+            <div id="tab-upload" class="tab-content active">
+                <form method="POST" action="/" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <h3 class="section-title">Source Files</h3>
+                        <label for="pdf">Weekly Bulletin PDF</label>
+                        <input type="file" id="pdf" name="pdf" accept=".pdf" required>
+                        <small>Upload the weekly bulletin PDF containing hymn numbers and Bible references.</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <h3 class="section-title">Announcements</h3>
+                        <label for="ann_doc">Announcements DOCX</label>
+                        <input type="file" id="ann_doc" name="ann_doc" accept=".docx">
+                        <small>Optional. Use this when announcements should be merged into the bulletin output.</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <h3 class="section-title">Output Format</h3>
+                        <div class="radio-group">
+                            <label><input type="radio" name="output_format" value="text" checked> Text File (.txt)</label>
+                            <label><input type="radio" name="output_format" value="pdf"> PDF Document</label>
+                        </div>
+                    </div>
+                    
+                    <div class="actions">
+                        <button type="submit" class="action-btn">Generate Bulletin</button>
+                        <button type="submit" formaction="/preview" formtarget="_blank" class="action-btn preview-btn">Preview Text</button>
+                    </div>
+                </form>
+            </div>
 
-    <!-- Files -->
-    <div class="card">
-      <h3>📂 Files</h3>
+            <!-- TAB 2: MANUAL ENTRY -->
+            <div id="tab-manual" class="tab-content">
+                <form method="POST" action="/manual" enctype="multipart/form-data">
+                    
+                    <div class="form-group">
+                        <h3 class="section-title">Hymns</h3>
+                        <div id="hymns-container">
+                            <!-- Default first hymn row -->
+                            <div class="row hymn-row">
+                                <div class="col">
+                                    <label>Designation (Optional)</label>
+                                    <input type="text" name="hymn_desc[]" placeholder="e.g. Opening Hymn">
+                                </div>
+                                <div class="col">
+                                    <label>Language</label>
+                                    <select name="hymn_lang[]">
+                                        <option value="english">English</option>
+                                        <option value="kannada">Kannada</option>
+                                        <option value="tulu">Tulu</option>
+                                    </select>
+                                </div>
+                                <div class="col">
+                                    <label>Hymn Number</label>
+                                    <input type="text" name="hymn_num[]" placeholder="e.g. 154" required>
+                                </div>
+                                <div class="col">
+                                    <label>Verses</label>
+                                    <input type="text" name="hymn_verses[]" placeholder="e.g. 1-3, or all" value="all" required>
+                                </div>
+                                <div>
+                                    <button type="button" class="remove-btn" onclick="removeRow(this)" style="display:none;">X</button>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" class="add-btn" onclick="addHymn()">Add Hymn</button>
+                    </div>
 
-      <label>Weekly PDF</label>
-      <input type="file" name="pdf" accept="application/pdf" required>
 
-      <label>Announcements DOCX</label>
-      <input type="file" name="ann_doc" accept=".docx">
+                    <div class="form-group">
+                        <h3 class="section-title">Bible Readings</h3>
+                
+                        <div class="row">
+                            <div class="col">
+                                <label>Responsive Psalm</label>
+                                <select name="psalm_book" class="bible-book-select" data-default="Psalm"></select>
+                            </div>
+                            <div class="col">
+                                <label>Chapter</label>
+                                <input type="text" name="psalm_chapter" placeholder="e.g. 67">
+                            </div>
+                            <div class="col">
+                                <label>First Verse</label>
+                                <input type="text" name="psalm_start_verse" placeholder="e.g. 1">
+                            </div>
+                            <div class="col">
+                                <label>Last Verse</label>
+                                <input type="text" name="psalm_end_verse" placeholder="e.g. 7">
+                            </div>
+                        </div>
+                
+                        <div class="row">
+                            <div class="col">
+                                <label>Old Testament Reading</label>
+                                <select name="ot_book" class="bible-book-select"></select>
+                            </div>
+                            <div class="col">
+                                <label>Chapter</label>
+                                <input type="text" name="ot_chapter" placeholder="e.g. 4">
+                            </div>
+                            <div class="col">
+                                <label>First Verse</label>
+                                <input type="text" name="ot_start_verse" placeholder="e.g. 1">
+                            </div>
+                            <div class="col">
+                                <label>Last Verse</label>
+                                <input type="text" name="ot_end_verse" placeholder="e.g. 11">
+                            </div>
+                        </div>
+                
+                        <div class="row">
+                            <div class="col">
+                                <label>New Testament Reading</label>
+                                <select name="nt_book" class="bible-book-select"></select>
+                            </div>
+                            <div class="col">
+                                <label>Chapter</label>
+                                <input type="text" name="nt_chapter" placeholder="e.g. 4">
+                            </div>
+                            <div class="col">
+                                <label>First Verse</label>
+                                <input type="text" name="nt_start_verse" placeholder="e.g. 32">
+                            </div>
+                            <div class="col">
+                                <label>Last Verse</label>
+                                <input type="text" name="nt_end_verse" placeholder="e.g. 37">
+                            </div>
+                        </div>
+                
+                        <div class="row">
+                            <div class="col">
+                                <label>Gospel Reading</label>
+                                <select name="gospel_book" class="bible-book-select"></select>
+                            </div>
+                            <div class="col">
+                                <label>Chapter</label>
+                                <input type="text" name="gospel_chapter" placeholder="e.g. 6">
+                            </div>
+                            <div class="col">
+                                <label>First Verse</label>
+                                <input type="text" name="gospel_start_verse" placeholder="e.g. 32">
+                            </div>
+                            <div class="col">
+                                <label>Last Verse</label>
+                                <input type="text" name="gospel_end_verse" placeholder="e.g. 44">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <h3 class="section-title">Announcements</h3>
+                        <label for="manual_ann_doc">Announcements DOCX</label>
+                        <input type="file" id="manual_ann_doc" name="ann_doc" accept=".docx">
+                        <small>Optional. Attach a DOCX file if announcements should be included.</small>
+                    </div>
+
+                    <div class="form-group">
+                        <h3 class="section-title">Output Format</h3>
+                        <div class="radio-group">
+                            <label><input type="radio" name="output_format" value="text" checked> Text File (.txt)</label>
+                            <label><input type="radio" name="output_format" value="pdf"> PDF Document</label>
+                        </div>
+                    </div>
+            
+                    <div class="actions">
+                        <button type="submit" class="action-btn">Generate Bulletin</button>
+                    </div>
+                </form>
+            </div>
+
+            <footer class="footer-note">
+                Use the PDF workflow when the weekly bulletin already exists. Use manual entry when hymns and readings need to be assembled before publishing.
+            </footer>
+        </main>
     </div>
 
-    <!-- Hymns -->
-    <div class="card">
-      <h3>🎵 Hymns</h3>
-      <p class="help-text">Enter hymn numbers as per the hymn book.</p>
+    <script>
+        const BIBLE_BOOKS = [
+            'Genesis', 'Exodus', 'Leviticus', 'Numbers', 'Deuteronomy',
+            'Joshua', 'Judges', 'Ruth', '1 Samuel', '2 Samuel',
+            '1 Kings', '2 Kings', '1 Chronicles', '2 Chronicles', 'Ezra',
+            'Nehemiah', 'Esther', 'Job', 'Psalm', 'Proverbs',
+            'Ecclesiastes', 'Song of Solomon', 'Isaiah', 'Jeremiah', 'Lamentations',
+            'Ezekiel', 'Daniel', 'Hosea', 'Joel', 'Amos',
+            'Obadiah', 'Jonah', 'Micah', 'Nahum', 'Habakkuk',
+            'Zephaniah', 'Haggai', 'Zechariah', 'Malachi', 'Matthew',
+            'Mark', 'Luke', 'John', 'Acts', 'Romans',
+            '1 Corinthians', '2 Corinthians', 'Galatians', 'Ephesians', 'Philippians',
+            'Colossians', '1 Thessalonians', '2 Thessalonians', '1 Timothy', '2 Timothy',
+            'Titus', 'Philemon', 'Hebrews', 'James', '1 Peter',
+            '2 Peter', '1 John', '2 John', '3 John', 'Jude',
+            'Revelation'
+        ];
 
-      <div id="hymns-container">
+        function populateBibleBookSelects() {
+            const selects = document.querySelectorAll('.bible-book-select');
+            selects.forEach((select) => {
+                const defaultBook = select.dataset.default || '';
+                select.innerHTML = '<option value="">Select book</option>';
+                BIBLE_BOOKS.forEach((book) => {
+                    const option = document.createElement('option');
+                    option.value = book;
+                    option.textContent = book;
+                    if (book === defaultBook) {
+                        option.selected = true;
+                    }
+                    select.appendChild(option);
+                });
+            });
+        }
 
-        <!-- Default 5 hymns -->
-        <!-- Repeatable block -->
-        <div class="hymn-section" data-hymn-index="1">
-          <h4>Opening Hymn</h4>
-          <div class="hymn-input">
-            <div>
-              <label>Language</label>
-              <select name="hymn1_language">
-                <option value="kannada">Kannada</option>
-                <option value="tulu">Tulu</option>
-                <option value="english">English</option>
-              </select>
-            </div>
-            <div>
-              <label>Hymn Number</label>
-              <input type="text" name="hymn1_number" placeholder="e.g., 140">
-            </div>
-            <div>
-              <label>Verses</label>
-              <input type="text" name="hymn1_verses" placeholder="1,3,5 or empty">
-            </div>
-          </div>
-        </div>
+        function openTab(evt, tabId) {
+            // Hide all tabs
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+                tabcontent[i].className = tabcontent[i].className.replace(" active", "");
+            }
+            
+            // Remove active class from buttons
+            tablinks = document.getElementsByClassName("tab-btn");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            
+            // Show the current tab
+            document.getElementById(tabId).style.display = "block";
+            document.getElementById(tabId).className += " active";
+            evt.currentTarget.className += " active";
+        }
 
-        <div class="hymn-section" data-hymn-index="2">
-          <h4>Middle Hymn</h4>
-          <div class="hymn-input">
-            <div>
-              <label>Language</label>
-              <select name="hymn2_language">
-                <option value="kannada">Kannada</option>
-                <option value="tulu">Tulu</option>
-                <option value="english">English</option>
-              </select>
-            </div>
-            <div>
-              <label>Hymn Number</label>
-              <input type="text" name="hymn2_number" placeholder="e.g., 113">
-            </div>
-            <div>
-              <label>Verses</label>
-              <input type="text" name="hymn2_verses" placeholder="1,2">
-            </div>
-          </div>
-        </div>
+        function addHymn() {
+            const container = document.getElementById('hymns-container');
+            const row = document.createElement('div');
+            row.className = 'row hymn-row';
+            row.innerHTML = `
+                <div class="col">
+                    <label>Designation (Optional)</label>
+                    <input type="text" name="hymn_desc[]" placeholder="e.g. Offertory Hymn">
+                </div>
+                <div class="col">
+                    <label>Language</label>
+                    <select name="hymn_lang[]">
+                        <option value="english">English</option>
+                        <option value="kannada">Kannada</option>
+                        <option value="tulu">Tulu</option>
+                    </select>
+                </div>
+                <div class="col">
+                    <label>Hymn Number</label>
+                    <input type="text" name="hymn_num[]" placeholder="e.g. 154" required>
+                </div>
+                <div class="col">
+                    <label>Verses</label>
+                    <input type="text" name="hymn_verses[]" placeholder="e.g. 1-3, or all" value="all" required>
+                </div>
+                <div>
+                    <button type="button" class="remove-btn" onclick="removeRow(this)">X</button>
+                </div>
+            `;
+            container.appendChild(row);
+            
+            // Ensure remove buttons are visible for all if there's more than 1
+            updateRemoveButtons();
+        }
 
-        <div class="hymn-section" data-hymn-index="3">
-          <h4>Offertory Hymn</h4>
-          <div class="hymn-input">
-            <div>
-              <label>Language</label>
-              <select name="hymn3_language">
-                <option value="kannada">Kannada</option>
-                <option value="tulu">Tulu</option>
-                <option value="english">English</option>
-              </select>
-            </div>
-            <div>
-              <label>Hymn Number</label>
-              <input type="text" name="hymn3_number" placeholder="e.g., 156">
-            </div>
-            <div>
-              <label>Verses</label>
-              <input type="text" name="hymn3_verses" placeholder="All or 1,2,3">
-            </div>
-          </div>
-        </div>
+        function removeRow(btn) {
+            btn.closest('.row').remove();
+            updateRemoveButtons();
+        }
 
-        <div class="hymn-section" data-hymn-index="4">
-          <h4>Praise & Worship</h4>
-          <div class="hymn-input">
-            <div>
-              <label>Language</label>
-              <select name="hymn4_language">
-                <option value="kannada">Kannada</option>
-                <option value="tulu">Tulu</option>
-                <option value="english">English</option>
-              </select>
-            </div>
-            <div>
-              <label>Hymn Number</label>
-              <input type="text" name="hymn4_number" placeholder="e.g., 50">
-            </div>
-            <div>
-              <label>Verses</label>
-              <input type="text" name="hymn4_verses" placeholder="1,2">
-            </div>
-          </div>
-        </div>
+        function updateRemoveButtons() {
+            const rows = document.querySelectorAll('#hymns-container .row');
+            const btns = document.querySelectorAll('#hymns-container .remove-btn');
+            if (rows.length === 1) {
+                btns[0].style.display = 'none';
+            } else {
+                btns.forEach(btn => btn.style.display = 'block');
+            }
+        }
 
-        <div class="hymn-section" data-hymn-index="5">
-          <h4>Closing Hymn</h4>
-          <div class="hymn-input">
-            <div>
-              <label>Language</label>
-              <select name="hymn5_language">
-                <option value="kannada">Kannada</option>
-                <option value="tulu">Tulu</option>
-                <option value="english">English</option>
-              </select>
-            </div>
-            <div>
-              <label>Hymn Number</label>
-              <input type="text" name="hymn5_number" placeholder="e.g., 247">
-            </div>
-            <div>
-              <label>Verses</label>
-              <input type="text" name="hymn5_verses" placeholder="1,2,4">
-            </div>
-          </div>
-        </div>
-
-      </div>
-
-      <button type="button" class="btn-add" onclick="addHymn()">+ Add More Hymn</button>
-    </div>
-
-    <button type="submit" class="btn-primary">Generate PDF</button>
-
-  </form>
-
-  <footer>
-    <h4>📌 Template Placeholders</h4>
-    <ul>
-      <li><code>{WELCOME}</code></li>
-      <li><code>{HYMN1_KN_V1}</code>, <code>{HYMN1_EN_V1}</code>, etc.</li>
-      <li><code>{PSALM_EN_V1}</code>, <code>{PSALM_KN_V1}</code></li>
-      <li><code>{OT_EN_V1}</code>, <code>{OT_KN_V1}</code></li>
-      <li><code>{NT_EN_V1}</code>, <code>{NT_KN_V1}</code></li>
-      <li><code>{ANNOUNCEMENTS_TEXT}</code>, <code>{ANNOUNCEMENTS_TABLE}</code></li>
-    </ul>
-  </footer>
-
-</div>
-
-<script>
-  let hymnCount = 5;
-
-  function addHymn() {
-    hymnCount++;
-    const container = document.getElementById('hymns-container');
-
-    const div = document.createElement('div');
-    div.className = 'hymn-section';
-    div.innerHTML = `
-      <h4>Hymn ${hymnCount}
-        <button type="button" class="remove-hymn-btn" onclick="this.closest('.hymn-section').remove()">Remove</button>
-      </h4>
-      <div class="hymn-input">
-        <div>
-          <label>Language</label>
-          <select name="hymn${hymnCount}_language">
-            <option value="kannada">Kannada</option>
-            <option value="tulu">Tulu</option>
-            <option value="english">English</option>
-          </select>
-        </div>
-        <div>
-          <label>Hymn Number</label>
-          <input type="text" name="hymn${hymnCount}_number">
-        </div>
-        <div>
-          <label>Verses</label>
-          <input type="text" name="hymn${hymnCount}_verses">
-        </div>
-      </div>
-    `;
-    container.appendChild(div);
-  }
-</script>
-
+        populateBibleBookSelects();
+    </script>
 </body>
 </html>
