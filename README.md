@@ -112,3 +112,29 @@ GUI-based interface for easy content input
 Integration with Google Sheets or online song repositories
 
 Support for multilingual lyrics and templates
+
+## Deploy On Render
+
+This project is ready to deploy as a Render Web Service using `render.yaml`.
+
+1. Push your latest code to GitHub.
+2. In Render, click **New +** → **Blueprint**.
+3. Connect your GitHub account and select this repository.
+4. Render will read `render.yaml` and create the service automatically.
+5. Wait for the first deploy to complete, then open the generated Render URL.
+
+### Required Settings
+
+- Runtime: Python 3.11 (already set in `render.yaml`)
+- Build command: `pip install -r requirements.txt`
+- Start command: `gunicorn app:app`
+
+### Push Changes To GitHub
+
+Use these commands after local updates:
+
+```bash
+git add -A
+git commit -m "Describe your change"
+git push origin main
+```
