@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: church-ppt-app
+    name: church-ppt-content
     runtime: python
     buildCommand: pip install -r requirements.txt
     startCommand: gunicorn app:app
