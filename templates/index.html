@@ -429,18 +429,18 @@
             #tab-manual .hymn-row,
             #tab-manual .bible-row {
                 display: grid;
-                grid-template-columns: 1fr 1fr;
+                grid-template-columns: 1fr;
                 gap: 10px;
                 align-items: start;
             }
 
             #tab-manual .hymn-row .col:first-child,
             #tab-manual .bible-row .col:first-child {
-                grid-column: 1 / -1;
+                grid-column: auto;
             }
 
             #tab-manual .hymn-row > div:last-child {
-                grid-column: 1 / -1;
+                grid-column: auto;
             }
 
             #tab-manual .row:last-child {
