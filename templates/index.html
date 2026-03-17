@@ -31,6 +31,7 @@
                 radial-gradient(circle at top left, rgba(35, 41, 122, 0.1), transparent 32%),
                 linear-gradient(180deg, #f4f6fb 0%, #eef1f7 100%);
             color: var(--ink);
+            overflow-x: hidden;
         }
 
         .page-shell {
@@ -175,6 +176,7 @@
             width: 100%;
             margin-bottom: 8px;
             padding: 12px 14px;
+            min-height: 44px;
             border: 1px solid var(--line);
             border-radius: 12px;
             background: var(--surface-alt);
@@ -205,7 +207,13 @@
 
         .col {
             flex: 1;
+            flex-basis: 180px;
             min-width: 0;
+        }
+
+        .hymn-row > div:last-child {
+            display: flex;
+            align-items: flex-end;
         }
 
         .actions {
@@ -224,6 +232,7 @@
             background: var(--base-blue);
             color: #ffffff;
             padding: 12px 24px;
+            min-height: 46px;
             border: none;
             cursor: pointer;
             font-size: 0.96rem;
@@ -251,6 +260,7 @@
             color: var(--base-blue);
             border: 1px solid rgba(35, 41, 122, 0.2);
             padding: 10px 16px;
+            min-height: 44px;
             border-radius: 999px;
             cursor: pointer;
             font-size: 0.92rem;
@@ -268,6 +278,7 @@
             color: var(--danger);
             border: 1px solid rgba(163, 58, 58, 0.25);
             padding: 10px 12px;
+            min-height: 44px;
             border-radius: 12px;
             cursor: pointer;
             margin-top: 36px;
@@ -318,11 +329,16 @@
 
         @media (max-width: 900px) {
             .row {
-                flex-wrap: wrap;
+                flex-direction: column;
+                gap: 10px;
             }
 
             .remove-btn {
                 margin-top: 0;
+            }
+
+            .hymn-row > div:last-child {
+                align-items: stretch;
             }
         }
 
@@ -331,10 +347,21 @@
                 padding: 16px 14px 26px;
             }
 
+            .hero {
+                border-radius: 20px;
+                padding-top: 22px;
+                padding-bottom: 22px;
+            }
+
             .hero,
             .workspace {
                 padding-left: 18px;
                 padding-right: 18px;
+            }
+
+            .workspace {
+                border-radius: 18px;
+                padding-top: 16px;
             }
 
             .tabs {
@@ -343,6 +370,7 @@
 
             .tab-btn {
                 width: 100%;
+                min-height: 48px;
             }
 
             .actions {
@@ -351,6 +379,26 @@
 
             button.action-btn {
                 width: 100%;
+            }
+
+            .add-btn,
+            .remove-btn {
+                width: 100%;
+            }
+
+            .remove-btn {
+                margin-top: 4px;
+            }
+
+            .radio-group {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            input[type="file"],
+            input[type="text"],
+            select {
+                font-size: 16px;
             }
         }
     </style>
